@@ -81,10 +81,6 @@ public partial class CSSReservation : BasePlugin, IPluginConfig<ConfigRes>
                 Server.ExecuteCommand($"kickid {player.UserId}");
             }
         }
-        else
-        {
-            Server.ExecuteCommand($"kickid {player.UserId}");
-        }
         kicked = false;
     }
 }
