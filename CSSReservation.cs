@@ -8,6 +8,7 @@ using CounterStrikeSharp.API.Modules.Menu;
 using CounterStrikeSharp.API.Core.Attributes;
 using CounterStrikeSharp.API.Modules.Timers;
 using System.ComponentModel;
+using CounterStrikeSharp.API.Modules.Memory;
 
 namespace CSSReservation;
 [MinimumApiVersion(100)]
@@ -22,6 +23,8 @@ public partial class CSSReservation : BasePlugin, IPluginConfig<ConfigRes>
 
 
     public ConfigRes Config { get; set; }
+    public static int MaxPlayers => NativeAPI.GetCommandParamValue("-maxplayers", DataType.DATA_TYPE_INT, 64);
+
     public int PlayerConnected;
 
     public void OnConfigParsed(ConfigRes config)
@@ -46,7 +49,7 @@ public partial class CSSReservation : BasePlugin, IPluginConfig<ConfigRes>
     public void Authorization_Client(CCSPlayerController player)
     {
         var client = player.Index;
-        var maxplayers = Server.MaxPlayers;
+        var maxplayers = MaxPlayers;
 
         int connected = 0;
         foreach (var player_l in Utilities.GetPlayers().Where(player => player is { IsBot: false, IsValid: true }))
@@ -56,7 +59,7 @@ public partial class CSSReservation : BasePlugin, IPluginConfig<ConfigRes>
         PlayerConnected = connected;
         Server.PrintToConsole($"CSS RESERVATION - Player {player.PlayerName} try to connect on server. Actuall players on server {PlayerConnected}");
         bool kicked = false;
-        if (PlayerConnected == Server.MaxPlayers)
+        if (PlayerConnected == MaxPlayers)
         {
             if (AdminManager.PlayerHasPermissions(player, $"{Config.permission}"))
             {
@@ -80,6 +83,10 @@ public partial class CSSReservation : BasePlugin, IPluginConfig<ConfigRes>
             {
                 Server.ExecuteCommand($"kickid {player.UserId}");
             }
+        }
+        else
+        {
+            Server.PrintToConsole($"CSS RESERVATION - Player {player.PlayerName} is connected, server is not full. Actuall players on server {PlayerConnected}");
         }
         kicked = false;
     }
