@@ -50,13 +50,8 @@ public partial class CSSReservation : BasePlugin, IPluginConfig<ConfigRes>
     {
         var client = player.Index;
         var maxplayers = MaxPlayers;
+        PlayerConnected = Utilities.GetPlayers().Count;
 
-        int connected = 0;
-        foreach (var player_l in Utilities.GetPlayers().Where(player => player is { IsBot: false, IsValid: true }))
-        {
-            connected++;
-        }
-        PlayerConnected = connected;
         Server.PrintToConsole($"CSS RESERVATION - Player {player.PlayerName} try to connect on server. Actuall players on server {PlayerConnected}");
         bool kicked = false;
         if (PlayerConnected == MaxPlayers)
