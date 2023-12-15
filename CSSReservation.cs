@@ -56,20 +56,23 @@ public partial class CSSReservation : BasePlugin, IPluginConfig<ConfigRes>
         bool kicked = false;
         if (PlayerConnected == MaxPlayers)
         {
-            if (AdminManager.PlayerHasPermissions(player, $"{Config.permission}"))
+            if (AdminManager.PlayerHasPermissions(player, Config.permission))
             {
                 foreach (var l_player in Utilities.GetPlayers())
                 {
-                    CCSPlayerController player_res = l_player;
-
-                    var el_player = player_res.Index;
-                    if (kicked == false)
+                    if (l_player.UserId != 65535)
                     {
-                        if (AdminManager.PlayerHasPermissions(player, $"{Config.permission}"))
+                        CCSPlayerController player_res = l_player;
+
+                        var el_player = player_res.Index;
+                        if (kicked == false)
                         {
-                            kicked = true;
-                            Server.PrintToChatAll($" {Config.Prefix}Player {ChatColors.Lime}{player_res.PlayerName} {ChatColors.Default}has been kicked, bcs {ChatColors.Lime}Admin{ChatColors.Default} need to connect.");
-                            Server.ExecuteCommand($"kickid {player_res.UserId}");
+                            if (AdminManager.PlayerHasPermissions(player, Config.permission))
+                            {
+                                kicked = true;
+                                Server.PrintToChatAll($" {Config.Prefix}Player {ChatColors.Lime}{player_res.PlayerName} {ChatColors.Default}has been kicked, bcs {ChatColors.Lime}Admin{ChatColors.Default} need to connect.");
+                                Server.ExecuteCommand($"kickid {player_res.UserId}");
+                            }
                         }
                     }
                 }
